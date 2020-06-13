@@ -11,7 +11,7 @@ server.use(logger);
 server.use(helmet());
 server.use(express.json())
 
-// server.use('/api/projects', projectsRouter);
+server.use('/api/projects', projectsRouter);
 // server.use('/api/actions', actionsRouter);
 
 server.get('/', (req, res) => {
