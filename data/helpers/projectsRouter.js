@@ -54,21 +54,23 @@ router.delete('/:id', validateId(), (req, res) => {
     res.status(200).json({ID: req.params.id, message: p })
   })
   .catch(err => {
-    res.status(500).json({message: "Error retrieving post"})
+    res.status(500).json({message: "Error retrieving project"})
   })
 });
-
-// router.put('/:id', (req, res) => {
-//   db.update(req.params.id, req.body)
-//   .then(post => {
-//     if(post){
-//       return res.status(200).json(post)
-//     }
-//   })
-//   .catch(err => {
-//     res.status(500).json({message: "Error retrieving post"})
-//   })
-// });
+//================
+//  UPDATE by ID
+//=================
+router.put('/:id', validateBody(), (req, res) => {
+  db.update(req.params.id, req.body)
+  .then(p => {
+    if(p){
+      return res.status(200).json(p)
+    }
+  })
+  .catch(err => {
+    res.status(500).json({message: "Error retrieving project"})
+  })
+});
 
 // custom middleware
 
