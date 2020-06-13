@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
 //===================
 //  READ BY ID
 //==================
-router.get('/:id', validatePostId(), (req, res) => {
+router.get('/:id', validateId(), (req, res) => {
   db.get(req.params.id)
   .then(p => {
     if(p){
@@ -48,15 +48,15 @@ router.get('/:id', validatePostId(), (req, res) => {
 //=================
 //   DELETE by ID
 //===================
-// router.delete('/:id', validatePostId(), (req, res) => {
-//   db.remove(req.params.id)
-//   .then(post => {
-//     res.status(200).json({postID: req.params.id, post: post })
-//   })
-//   .catch(err => {
-//     res.status(500).json({message: "Error retrieving post"})
-//   })
-// });
+router.delete('/:id', validateId(), (req, res) => {
+  db.remove(req.params.id)
+  .then(p => {
+    res.status(200).json({ID: req.params.id, message: p })
+  })
+  .catch(err => {
+    res.status(500).json({message: "Error retrieving post"})
+  })
+});
 
 // router.put('/:id', (req, res) => {
 //   db.update(req.params.id, req.body)
@@ -72,7 +72,7 @@ router.get('/:id', validatePostId(), (req, res) => {
 
 // custom middleware
 
-function validatePostId(req, res, next) {
+function validateId(req, res, next) {
   return (req, res, next) => {
 		db.get(req.params.id)
 			.then(p => {
