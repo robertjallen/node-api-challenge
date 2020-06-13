@@ -1,0 +1,94 @@
+const express = require('express');
+const actionDb = require('./actionModel');
+const projectDb = require('./projectModel');
+const router = express.Router();
+
+
+//============
+//   CREATE new action by project ID
+//=============
+router.post('/:id', validateBody(), (req,res) => {
+  const id = req.params.id
+  const { description, notes } = req.body
+
+  actionDb.insert({ project_id: id, description, notes })
+    .then(action => {
+      res.status(201).json(action)
+    })
+    .catch(error => {
+      next(error)
+    })
+})
+
+//===================
+//  READ BY ID
+//==================
+router.get('/:id', validateId(), (req, res) => {
+  projectDb.get(req.params.id)
+  // actionDb.get(req.params.id)
+  .then(p => {
+    if(p){
+      return res.status(200).json(p.actions)
+    }
+  })
+  .catch(err => {
+    res.status(500).json({message: "Error retrieving project"})
+  })
+});
+//=================
+//   DELETE by ID
+//===================
+// router.delete('/:id', validateId(), (req, res) => {
+//   db.remove(req.params.id)
+//   .then(p => {
+//     res.status(200).json({ID: req.params.id, message: p })
+//   })
+//   .catch(err => {
+//     res.status(500).json({message: "Error retrieving project"})
+//   })
+// });
+// //================
+// //  UPDATE by ID
+// //=================
+// router.put('/:id', validateBody(), (req, res) => {
+//   db.update(req.params.id, req.body)
+//   .then(p => {
+//     if(p){
+//       return res.status(200).json(p)
+//     }
+//   })
+//   .catch(err => {
+//     res.status(500).json({message: "Error retrieving project"})
+//   })
+// });
+
+// custom middleware
+
+function validateId(req, res, next) {
+  return (req, res, next) => {
+		projectDb.get(req.params.id)
+			.then(p => {
+				if (p) {
+					req.project = p;
+					next();
+				} else {
+					res.status(404).json({ message: `Project with id ${req.params.id} does not exist` });
+				}
+			})
+			.catch(err => {
+				next(err);
+			});
+	};
+}
+
+function validateBody() {
+  return (req, res, next) => {
+    if(req.body && req.body.notes && req.body.description){
+      next()
+    }else{
+      res.status(400).json({ message: "missing project data" })
+    }
+  }
+}
+
+module.exports = router;

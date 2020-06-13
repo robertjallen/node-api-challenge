@@ -12,7 +12,7 @@ server.use(helmet());
 server.use(express.json())
 
 server.use('/api/projects', projectsRouter);
-// server.use('/api/actions', actionsRouter);
+server.use('/api/actions', actionsRouter);
 
 server.get('/', (req, res) => {
   res.send(`<h2>Dont worry be happy!😀😀😀😀😀</h2>`);
