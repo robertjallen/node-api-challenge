@@ -47,20 +47,20 @@ router.delete('/:id', validateActId(), (req, res) => {
     res.status(500).json({message: "Error retrieving action"})
   })
 });
-// //================
-// //  UPDATE by ID
-// //=================
-// router.put('/:id', validateBody(), (req, res) => {
-//   db.update(req.params.id, req.body)
-//   .then(p => {
-//     if(p){
-//       return res.status(200).json(p)
-//     }
-//   })
-//   .catch(err => {
-//     res.status(500).json({message: "Error retrieving project"})
-//   })
-// });
+//================
+//  UPDATE by action ID
+//=================
+router.put('/:id', validateActId(), validateBody(), (req, res) => {
+  actionDb.update(req.params.id, req.body)
+  .then(a => {
+    if(a){
+      return res.status(200).json(a)
+    }
+  })
+  .catch(err => {
+    res.status(500).json({message: "Error retrieving action"})
+  })
+});
 
 // custom middleware
 
