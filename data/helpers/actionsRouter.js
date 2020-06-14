@@ -21,9 +21,9 @@ router.post('/:id', validateBody(), (req,res) => {
 })
 
 //===================
-//  READ BY ID
+//  READ all actions BY project ID
 //==================
-router.get('/:id', validateId(), (req, res) => {
+router.get('/:id', validateProjId(), (req, res) => {
   projectDb.get(req.params.id)
   // actionDb.get(req.params.id)
   .then(p => {
@@ -36,17 +36,17 @@ router.get('/:id', validateId(), (req, res) => {
   })
 });
 //=================
-//   DELETE by ID
+//   DELETE a projects action by action ID
 //===================
-// router.delete('/:id', validateId(), (req, res) => {
-//   db.remove(req.params.id)
-//   .then(p => {
-//     res.status(200).json({ID: req.params.id, message: p })
-//   })
-//   .catch(err => {
-//     res.status(500).json({message: "Error retrieving project"})
-//   })
-// });
+router.delete('/:id', validateActId(), (req, res) => {
+  actionDb.remove(req.params.id)
+  .then(a => {
+    res.status(200).json({ID: req.params.id, message: a })
+  })
+  .catch(err => {
+    res.status(500).json({message: "Error retrieving action"})
+  })
+});
 // //================
 // //  UPDATE by ID
 // //=================
@@ -64,7 +64,7 @@ router.get('/:id', validateId(), (req, res) => {
 
 // custom middleware
 
-function validateId(req, res, next) {
+function validateProjId(req, res, next) {
   return (req, res, next) => {
 		projectDb.get(req.params.id)
 			.then(p => {
@@ -73,6 +73,23 @@ function validateId(req, res, next) {
 					next();
 				} else {
 					res.status(404).json({ message: `Project with id ${req.params.id} does not exist` });
+				}
+			})
+			.catch(err => {
+				next(err);
+			});
+	};
+}
+
+function validateActId(req, res, next) {
+  return (req, res, next) => {
+		actionDb.get(req.params.id)
+			.then(a => {
+				if (a) {
+					req.action = a;
+					next();
+				} else {
+					res.status(404).json({ message: `Action with id ${req.params.id} does not exist` });
 				}
 			})
 			.catch(err => {
